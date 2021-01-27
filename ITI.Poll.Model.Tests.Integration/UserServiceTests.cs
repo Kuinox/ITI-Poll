@@ -107,9 +107,9 @@ namespace ITI.Poll.Model.Tests.Integration
 				PollContextAccessor pollContextAccessor = new PollContextAccessor(pollContext);
 				UserRepository userRepository = new UserRepository(pollContextAccessor);
 				string nickname = $"Test-{Guid.NewGuid()}";
-
+				pollContext.Database.BeginTransaction();
 				Result<User> user = await TestHelpers.UserService.CreateUser(userRepository, email, nickname, "validpassword");
-
+				pollContext.Database.RollbackTransaction();
 				user.IsSuccess.Should().BeFalse();
 			}
 		}
@@ -139,9 +139,9 @@ namespace ITI.Poll.Model.Tests.Integration
 				PollContextAccessor pollContextAccessor = new PollContextAccessor(pollContext);
 				UserRepository userRepository = new UserRepository(pollContextAccessor);
 				string nickname = $"Test-{Guid.NewGuid()}";
-
+				pollContext.Database.BeginTransaction();
 				Result<User> user = await TestHelpers.UserService.CreateUser(userRepository, email, nickname, "validpassword");
-
+				pollContext.Database.RollbackTransaction();
 				user.IsSuccess.Should().BeTrue();
 			}
 		}
