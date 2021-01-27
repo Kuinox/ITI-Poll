@@ -44,7 +44,6 @@ namespace ITI.Poll.Infrastructure.Tests.Integration
                     "test-hash"
                 );
 
-                // create the poll using the previously created author
                 var poll = new Model.Poll(0, author.Value.UserId, "question?", false);
                 poll.AddGuest(guest1.Value.UserId, await sut.GetNoProposal());
                 poll.AddGuest(guest2.Value.UserId, await sut.GetNoProposal());
@@ -58,10 +57,25 @@ namespace ITI.Poll.Infrastructure.Tests.Integration
                 var createdPoll = await sut.FindById(poll.PollId);
                 createdPoll.Value.PollId.Should().Be(poll.PollId);
                 
-                // clean up the whole thing
                 await TestHelpers.UserService.DeleteUser(pollContext, userRepository, sut, author.Value.UserId);
                 await TestHelpers.UserService.DeleteUser(pollContext, userRepository, sut, guest1.Value.UserId);
                 await TestHelpers.UserService.DeleteUser(pollContext, userRepository, sut, guest2.Value.UserId);
+            }
+        }
+
+        [Test]
+        public async Task create_poll_with_invalid_authorId_should_return_an_error()
+        {
+            using(PollContext pollContext = TestHelpers.CreatePollContext())
+            {
+                var pollContextAccessor = new PollContextAccessor(pollContext);
+                var userRepository = new UserRepository(pollContextAccessor);
+                var sut = new PollRepository(pollContextAccessor);
+                var userService = TestHelpers.UserService;
+
+                var poll = new Model.Poll(0, -424, "question?", false);
+                var result = await sut.Create(poll);
+                result.IsSuccess.Should().BeFalse();
             }
         }
     }
