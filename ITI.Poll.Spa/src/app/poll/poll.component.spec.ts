@@ -36,4 +36,28 @@ describe('PollComponent', () => {
     const title = element.querySelector('h1');
     expect(title.innerText).toBe('Question?');
   });
+
+  it('should display a valid poll id', () => {
+    component.poll = {
+      pollId: 4821,
+      question: 'Question?',
+      answers: [
+        { text: 'P1', votesCount: 0 },
+        { text: 'P2', votesCount: 0 },
+        { text: 'P3', votesCount: 0 }
+      ],
+      guestCount: 4
+    };
+    fixture.detectChanges();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const idParagraph = element.querySelector('div p')?.innerHTML;
+    const pollId = parseInt(
+      idParagraph.slice(
+        idParagraph.indexOf('#') + 1,
+        idParagraph.length
+      )
+    );
+    expect(pollId).toBeGreaterThanOrEqual(0);
+  });
 })
