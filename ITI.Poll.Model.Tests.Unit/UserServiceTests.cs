@@ -84,5 +84,42 @@ namespace ITI.Poll.Model.Tests.Unit
 
             result.Should().BeEquivalentTo(Result.CreateSuccess(user));
         }
+
+        [Test]
+        public async Task delete_user() //Hugo
+        {
+            IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
+            passwordHasher.HashPassword( Arg.Any<string>() ).Returns( "hash" );
+            IUserDeletedEventHandler userDeletedEventHandler = Substitute.For<IUserDeletedEventHandler>();
+            IUserRepository userRepository = Substitute.For<IUserRepository>();
+            User user = new User( 1234, "test@test.fr", "Test", "hash", false ) ;
+            userRepository.FindById( Arg.Any<int>() ).Returns( Result.CreateSuccess( user ) );
+            UserService sut = new UserService( passwordHasher, userDeletedEventHandler );
+            var unitOfWork = Substitute.For<IUnitOfWork>();
+            var pollRepository = Substitute.For<IPollRepository>();
+
+            Result result = await sut.DeleteUser(unitOfWork, userRepository, pollRepository, 1234);
+
+            Result expected = Result.CreateSuccess();
+            result.Should().BeEquivalentTo( expected );
+        }
+
+        [Test]
+        public async Task delete_user_trigger_UserDeletedEventHandler() //Hugo
+        {
+            IPasswordHasher passwordHasher = Substitute.For<IPasswordHasher>();
+            passwordHasher.HashPassword( Arg.Any<string>() ).Returns( "hash" );
+            IUserDeletedEventHandler userDeletedEventHandler = Substitute.For<IUserDeletedEventHandler>();
+            IUserRepository userRepository = Substitute.For<IUserRepository>();
+            User user = new User( 1234, "test@test.fr", "Test", "hash", false );
+            userRepository.FindById( Arg.Any<int>() ).Returns( Result.CreateSuccess( user ) );
+            UserService sut = new UserService( passwordHasher, userDeletedEventHandler );
+            var unitOfWork = Substitute.For<IUnitOfWork>();
+            var pollRepository = Substitute.For<IPollRepository>();
+
+            await sut.DeleteUser( unitOfWork, userRepository, pollRepository, 1234 );
+
+            await userDeletedEventHandler.Received( 1 ).Handle( unitOfWork, pollRepository, 1234 );   
+        }
     }
 }
