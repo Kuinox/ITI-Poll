@@ -100,7 +100,7 @@ namespace ITI.Poll.Model.Tests.Integration
 		[TestCase("@example.com")]
 		[TestCase("just”not”right @example.com")]
 		[TestCase("this\\ is\"really\"not\\allowed @example.com")]
-		public async Task cant_create_account_with_invalid_email(string email)
+		public async Task cant_create_account_with_invalid_email(string email) // Nicolas
 		{
 			using (PollContext pollContext = TestHelpers.CreatePollContext())
 			{
@@ -132,7 +132,7 @@ namespace ITI.Poll.Model.Tests.Integration
 		[TestCase(@"much.”more\ unusual”@example.com")]
 		[TestCase(@"very.unusual.”@”.unusual.com @example.com")]
 		[TestCase(@"very.”(),:;<>[]”.VERY.”very@\\ ""very”.unusual@strange.example.com")]
-		public async Task can_create_account_with_weird_valid_email(string email)
+		public async Task can_create_account_with_weird_valid_email(string email) // Nicolas
 		{
 			using (PollContext pollContext = TestHelpers.CreatePollContext())
 			{
