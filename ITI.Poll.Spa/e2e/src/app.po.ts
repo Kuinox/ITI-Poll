@@ -1,6 +1,10 @@
 import { browser, by, element } from 'protractor';
 
 export class AppPage {
+  async refresh(): Promise<unknown> {
+    return browser.refresh();
+  }
+  
   async navigateTo(): Promise<unknown> {
     return browser.get(browser.baseUrl);
   }

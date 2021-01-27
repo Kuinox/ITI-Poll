@@ -29,4 +29,17 @@ describe('workspace-project App', () => {
     expect(await page.email()).toEqual(email);
   });
 
+  it('should disconnect user when refreshing the page ', async () => {
+    await page.navigateToSignUp();
+    const email = `test-${randomString()}@test.org`;
+    const nickname = `Test-${randomString()}`;
+    const password = 'validpassword';
+
+    await page.fillSignUpForm(email, nickname, password);
+    await page.signUp();
+
+    await page.refresh();
+
+    expect(await page.email()).toEqual('Login');
+  });
 });
