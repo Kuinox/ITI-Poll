@@ -42,4 +42,15 @@ describe('workspace-project App', () => {
 
     expect(await page.email()).toEqual('Login');
   });
+
+  it('should display \'Invalid email.\' when filling sign up form using an invalid email', async () => {
+    const email = ' ';
+    const nickname = `Test-${randomString()}`;
+    const password = 'validpassword';
+
+    await page.navigateToSignUp();
+    await page.fillSignUpForm(email, nickname, password);
+
+    expect(await page.invalidEmailMessage()).toEqual('Invalid email.');
+  });
 });

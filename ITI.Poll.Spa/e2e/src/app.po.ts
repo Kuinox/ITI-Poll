@@ -37,4 +37,8 @@ export class AppPage {
   async email(): Promise<string> {
     return element(by.css('app-root .app__nav ul li.last')).getText();
   }
+
+  async invalidEmailMessage(): Promise<string> {
+    return element(by.css('div.alert')).getText();
+  }
 }
